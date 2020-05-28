@@ -19,7 +19,7 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}">
-    
+
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
         <Label x:Name="CloseLabel" PreviewMouseDown="CloseLabel_Clicked" Content="X" HorizontalAlignment="Center" Margin="750,20,20,400" VerticalAlignment="Center" FontWeight="Bold" Width="30" Height="30" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0" ScrollViewer.HorizontalScrollBarVisibility="Auto" FontSize="24"/>
         <Label x:Name="TitelLabel" Content="DeepfryBox" HorizontalAlignment="Center" Margin="19,20,661,396" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0" ScrollViewer.HorizontalScrollBarVisibility="Auto" FontSize="22" RenderTransformOrigin="-15.4,1.85"/>
@@ -41,7 +41,7 @@
         <ProgressBar x:Name="ConversionProgressBar" HorizontalAlignment="Center" Height="10" Margin="238,344,238,0" VerticalAlignment="Top" Width="324"/>
         <Button x:Name="DeepfryButton" Content="deepfry!" HorizontalAlignment="Center" Margin="238,365,238,31" VerticalAlignment="Center" Width="324" Height="54" Click="DeepfryButton_Click"/>
 
-        <materialDesign:Snackbar x:Name="NotificationBar" MessageQueue="{materialDesign:MessageQueue}" HorizontalAlignment="Center" Height="52" Margin="151,13,457,385" VerticalAlignment="Center" Width="192" MinWidth="200" HorizontalContentAlignment="Center" FontWeight="Bold"/>
+        <materialDesign:Snackbar x:Name="NotificationBar" MessageQueue="{materialDesign:MessageQueue}" HorizontalAlignment="Center" Height="52" Margin="147,13,373,385" VerticalAlignment="Center" Width="280" MinWidth="200" HorizontalContentAlignment="Center" FontWeight="Bold"/>
     </Grid>
-    
+
 </Window>

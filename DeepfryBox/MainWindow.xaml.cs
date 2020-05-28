@@ -3,7 +3,11 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using Xabe.FFmpeg;
 
 namespace DeepfryBox
@@ -13,11 +17,18 @@ namespace DeepfryBox
     /// </summary>
     public partial class MainWindow : Window
     {
-        const String ffmpegPath = "./ffmpeg-binaries";
+        const string ffmpegPath = "./ffmpeg-binaries";
 
         public MainWindow()
         {
             InitializeComponent();
+
+            { // Check Version
+                string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                string latest = new WebClient().DownloadString("https://raw.githubusercontent.com/richardletshacks/DeepfryBox/master/version?token=AGX6QNXAPIJA6NZTHQLDXDC63D6YE");
+                if (version != latest)
+                    NotificationBar.MessageQueue.Enqueue("Update available.", "DOWNLOAD", new Action(() => Process.Start("explorer.exe", "https://github.com/richardletshacks/DeepfryBox/releases/latest")));
+            }
 
             FFmpeg.SetExecutablesPath(ffmpegPath);
         }
@@ -53,8 +64,8 @@ namespace DeepfryBox
 
         private void DeepfryButton_Click(object sender, RoutedEventArgs e)
         {
-            String inputPath = InputPathBox.Text;
-            String outputPath = OutputPathBox.Text;
+            string inputPath = InputPathBox.Text;
+            string outputPath = OutputPathBox.Text;
 
             if (!IsValidPath(inputPath) || !File.Exists(inputPath))
             {
@@ -89,7 +100,10 @@ namespace DeepfryBox
             c.SetOverwriteOutput(true);
             c.SetVideoBitrate((long)VideoBitrateSlider.Value);
             c.SetAudioBitrate((long)AudioBitrateSlider.Value);
-            c.OnProgress += (sender, args) => { this.Dispatcher.Invoke(() => ConversionProgressBar.Value = args.Percent); };
+            c.OnProgress += (sender, args) => { this.Dispatcher.Invoke(() => {
+                DoubleAnimation anim = new DoubleAnimation(args.Percent, TimeSpan.FromSeconds(0.5));
+                ConversionProgressBar.BeginAnimation(ProgressBar.ValueProperty, anim);
+            }); };
             
             await c.Start();
 
@@ -99,6 +113,8 @@ namespace DeepfryBox
         private bool IsValidPath(String path)
         {
             if (path == "")
+                return false;
+            if (!(path.EndsWith(".mp4") || path.EndsWith(".mov") || path.EndsWith(".avi")))
                 return false;
             try
             {
