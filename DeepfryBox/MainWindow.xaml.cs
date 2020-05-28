@@ -23,13 +23,6 @@ namespace DeepfryBox
         {
             InitializeComponent();
 
-            { // Check Version
-                string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-                string latest = new WebClient().DownloadString("https://raw.githubusercontent.com/richardletshacks/DeepfryBox/master/version?token=AGX6QNXAPIJA6NZTHQLDXDC63D6YE");
-                if (version != latest)
-                    NotificationBar.MessageQueue.Enqueue("Update available.", "DOWNLOAD", new Action(() => Process.Start("explorer.exe", "https://github.com/richardletshacks/DeepfryBox/releases/latest")));
-            }
-
             FFmpeg.SetExecutablesPath(ffmpegPath);
         }
 
