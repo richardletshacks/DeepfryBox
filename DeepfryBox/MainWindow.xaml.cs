@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
@@ -43,10 +44,26 @@ namespace DeepfryBox
             }
         }
 
+        private void Input_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string filePath = files[0];
+                InputPathBox.Text = filePath;
+            }
+        }
+
         private void BrowseOutputButton_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog dlg = new SaveFileDialog();
             dlg.DefaultExt = ".mp4";
+            if(IsValidPath(InputPathBox.Text))
+            {
+                string newName = new Regex(@"[ \w-]+\.").Match(InputPathBox.Text).Value;
+                newName = newName.Remove(newName.Length - 1) + "_deepfried.mp4";
+                dlg.FileName = newName;
+            }
             dlg.Filter = "Output File|*.mp4";
             Nullable<bool> result = dlg.ShowDialog();
             if (result == true)
@@ -84,8 +101,8 @@ namespace DeepfryBox
         private async void Deepfry(String inputPath, String outputPath)
         {
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(inputPath);
-            IStream videoStream = mediaInfo.VideoStreams.FirstOrDefault().SetCodec(VideoCodec.h264);
-            IStream audioStream = mediaInfo.AudioStreams.FirstOrDefault().SetCodec(AudioCodec.aac);
+            IStream videoStream = mediaInfo.VideoStreams.FirstOrDefault();
+            IStream audioStream = mediaInfo.AudioStreams.FirstOrDefault();
 
             IConversion c = FFmpeg.Conversions.New();
             c.AddStream(audioStream, videoStream);
@@ -93,6 +110,7 @@ namespace DeepfryBox
             c.SetOverwriteOutput(true);
             c.SetVideoBitrate((long)VideoBitrateSlider.Value);
             c.SetAudioBitrate((long)AudioBitrateSlider.Value);
+            c.AddParameter("-filter:v fps=fps=" + FramerateSlider.Value);
             c.OnProgress += (sender, args) => { this.Dispatcher.Invoke(() => {
                 DoubleAnimation anim = new DoubleAnimation(args.Percent, TimeSpan.FromSeconds(0.5));
                 ConversionProgressBar.BeginAnimation(ProgressBar.ValueProperty, anim);
@@ -126,6 +144,11 @@ namespace DeepfryBox
             if (!File.Exists(ffmpegPath + "/ffprobe.exe")) return false;
             if (!File.Exists(ffmpegPath + "/ffplay.exe")) return false;
             return true;
+        }
+
+        private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            this.DragMove();
         }
     }
 }
