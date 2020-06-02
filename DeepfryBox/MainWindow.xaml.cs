@@ -19,6 +19,7 @@ namespace DeepfryBox
     public partial class MainWindow : Window
     {
         const string ffmpegPath = "./ffmpeg-binaries";
+        bool running = false;
 
         public MainWindow()
         {
@@ -58,12 +59,8 @@ namespace DeepfryBox
         {
             SaveFileDialog dlg = new SaveFileDialog();
             dlg.DefaultExt = ".mp4";
-            if(IsValidPath(InputPathBox.Text))
-            {
-                string newName = new Regex(@"[ \w-]+\.").Match(InputPathBox.Text).Value;
-                newName = newName.Remove(newName.Length - 1) + "_deepfried.mp4";
-                dlg.FileName = newName;
-            }
+            if (IsValidPath(InputPathBox.Text))
+                dlg.FileName = Path.GetFileNameWithoutExtension(InputPathBox.Text) + "_deepfried.mp4";
             dlg.Filter = "Output File|*.mp4";
             Nullable<bool> result = dlg.ShowDialog();
             if (result == true)
@@ -95,12 +92,17 @@ namespace DeepfryBox
                 return;
             }
 
-            Deepfry(inputPath, outputPath);
+            if (running)
+                NotificationBar.MessageQueue.Enqueue("Already running!");
+            else
+                Deepfry(inputPath, outputPath);
         }
 
         private async void Deepfry(String inputPath, String outputPath)
         {
-            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(inputPath);
+            running = true;
+
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(inputPath).ConfigureAwait(true);
             IStream videoStream = mediaInfo.VideoStreams.FirstOrDefault();
             IStream audioStream = mediaInfo.AudioStreams.FirstOrDefault();
 
@@ -116,17 +118,26 @@ namespace DeepfryBox
                 ConversionProgressBar.BeginAnimation(ProgressBar.ValueProperty, anim);
             }); };
             
-            await c.Start();
+            await c.Start().ConfigureAwait(true);
 
+            running = false;
             NotificationBar.MessageQueue.Enqueue("Complete!", "OPEN", new Action(() => Process.Start("explorer.exe", outputPath)));
         }
 
         private bool IsValidPath(String path)
         {
-            if (path == "")
+            if (string.IsNullOrEmpty(path))
                 return false;
-            if (!(path.EndsWith(".mp4") || path.EndsWith(".mov") || path.EndsWith(".avi")))
-                return false;
+            switch (Path.GetExtension(path)) {
+                case ".mp4":
+                    break;
+                case ".avi":
+                    break;
+                case ".mov":
+                    break;
+                default:
+                    return false;
+            }
             try
             {
                 System.Security.AccessControl.DirectorySecurity ds = Directory.GetAccessControl(Directory.GetParent(path).FullName);

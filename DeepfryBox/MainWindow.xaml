@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DeepfryBox"
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="Deepfry Box" 
+        Title="DeepfryBox" 
         WindowStartupLocation="CenterScreen" 
         ResizeMode="NoResize" 
         Height="450" 
@@ -28,11 +28,11 @@
         <Label x:Name="TitelLabel" Content="DeepfryBox" HorizontalAlignment="Center" Margin="19,20,661,396" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Padding="0" ScrollViewer.HorizontalScrollBarVisibility="Auto" FontSize="22" RenderTransformOrigin="-15.4,1.85"/>
 
         <Label Content="Input" HorizontalAlignment="Center" Margin="48,86,703,325" VerticalAlignment="Center" Height="39" Width="49" FontSize="16" VerticalContentAlignment="Center"/>
-        <TextBox x:Name="InputPathBox"  HorizontalAlignment="Center" Height="28" Margin="112,92,187,330" TextWrapping="Wrap" VerticalAlignment="Center" Width="501" FontSize="16" VerticalContentAlignment="Center" AllowDrop="True"/>
-        <Button x:Name="BrowseInputButton" Content="Browse" HorizontalAlignment="Left" Margin="631,92,0,0" VerticalAlignment="Top" Width="105" Height="28" Click="BrowseInputButton_Click" FontWeight="Normal"  AllowDrop="True"/>
+        <TextBox x:Name="InputPathBox"  HorizontalAlignment="Center" Height="28" Margin="112,92,187,330" VerticalAlignment="Center" Width="501" FontSize="16" VerticalContentAlignment="Center" MaxLines="1" TextWrapping="NoWrap"/>
+        <Button x:Name="BrowseInputButton" Content="Browse" HorizontalAlignment="Left" Margin="631,92,0,0" VerticalAlignment="Top" Width="105" Height="28" Click="BrowseInputButton_Click" FontWeight="Normal"/>
 
         <Label Content="Output" HorizontalAlignment="Center" Margin="48,133,693,278" VerticalAlignment="Center" Height="39" Width="59" FontSize="16" VerticalContentAlignment="Center"/>
-        <TextBox x:Name="OutputPathBox"  HorizontalAlignment="Center" Height="28" Margin="112,139,187,283" TextWrapping="Wrap" VerticalAlignment="Center" Width="501" FontSize="16" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="OutputPathBox"  HorizontalAlignment="Center" Height="28" Margin="112,139,187,283" VerticalAlignment="Center" Width="501" FontSize="16" VerticalContentAlignment="Center"  MaxLines="1" TextWrapping="NoWrap"/>
         <Button x:Name="BrowseOutputButton" Content="Browse" HorizontalAlignment="Left" Margin="631,139,0,0" VerticalAlignment="Top" Width="105" Height="28" Click="BrowseOutputButton_Click" FontWeight="Normal"/>
 
         <Label Content="Video" HorizontalAlignment="Center" Margin="48,199,693,212" VerticalAlignment="Center" Height="39" Width="59" FontSize="16" VerticalContentAlignment="Center"/>
@@ -47,7 +47,7 @@
         <ProgressBar x:Name="ConversionProgressBar" HorizontalAlignment="Center" Height="10" Margin="238,347,238,0" VerticalAlignment="Top" Width="324"/>
         <Button x:Name="DeepfryButton" Content="deepfry!" HorizontalAlignment="Center" Margin="238,366,238,30" VerticalAlignment="Center" Width="324" Height="54" Click="DeepfryButton_Click"/>
 
-        <materialDesign:Snackbar x:Name="NotificationBar" MessageQueue="{materialDesign:MessageQueue}" HorizontalAlignment="Center" Height="52" Margin="147,13,373,385" VerticalAlignment="Center" Width="280" MinWidth="200" HorizontalContentAlignment="Center" FontWeight="Bold"/>
+        <materialDesign:Snackbar x:Name="NotificationBar" MessageQueue="{materialDesign:MessageQueue}" HorizontalAlignment="Center" Height="52" Margin="147,13,373,385" VerticalAlignment="Center" Width="280" MinWidth="200" HorizontalContentAlignment="Center" FontWeight="Bold" IsTabStop="False"/>
     </Grid>
-
+    
 </Window>
